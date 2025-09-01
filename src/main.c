@@ -1,5 +1,8 @@
 #include <raylib.h>
 #include <raymath.h>
+#include "constants.h"
+#include "game.h"
+#include "debug.h"
 
 /* 
 *  Template 5.5 - Basic window 
@@ -14,12 +17,24 @@
 
 int main(void) {
 
-    InitWindow(800, 600, "Template-5.5");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Neon Ronin");
+
+    Game game; // Game instance
+    Game_Initialize(&game); // Initialize game
 
     while (!WindowShouldClose()) {
-        BeginDrawing();
+        // Update
+        Game_Update(&game);
 
+        BeginDrawing();
         ClearBackground(RAYWHITE);
+
+        // Draw game
+        Game_Draw(&game);
+
+        // Debug Info
+        Draw_FPS_Counter();
+        Draw_Player_Info(&game.player, 10, 30);
 
         EndDrawing();
     }
