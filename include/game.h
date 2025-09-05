@@ -23,7 +23,7 @@ typedef struct {
 void Game_Initialize(Game* g);
 
 // Update the game state
-void Game_Update(Game* g);
+void Game_Update(Game* g, float dt);
 
 // Draw the game 
 void Game_Draw(const Game* g);

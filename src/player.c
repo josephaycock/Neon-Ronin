@@ -3,8 +3,10 @@
 #include "player.h"
 #include "constants.h"
 
-#define GRAVITY 0.11f
-#define JUMP_FORCE -6.5f
+#define PLAYER_SPEED 220.0f     // px/s
+#define GRAVITY      1800.0f    // px/s^2
+#define JUMP_FORCE   -650.0f    // px/s
+#define TERMINAL_VEL 900.0f     // px/s
 
 // Initialize player
 void Player_Initialize(Player* p, Vector2 startPos, Vector2 startVel) {
@@ -13,28 +15,32 @@ void Player_Initialize(Player* p, Vector2 startPos, Vector2 startVel) {
     p->onGround = true;
 }
 
-// Update player state
-void Player_Update(Player* p) {
-    // Basic movement
-    if (IsKeyDown(KEY_RIGHT)) p->position.x += p->velocity.x; // Move right
-    if (IsKeyDown(KEY_LEFT)) p->position.x -= p->velocity.x; // Move left
+void Player_Update(Player* p, float dt) {
+    // Horizontal movement: use constant speed (px/s), not velocity.x as "speed"
+    float dx = 0.0f;
+    if (IsKeyDown(KEY_RIGHT)) dx += 1.0f;
+    if (IsKeyDown(KEY_LEFT))  dx -= 1.0f;
+    p->position.x += dx * PLAYER_SPEED * dt;
 
-    // Jumping mechanics
+    // Jumping: set instantaneous upward velocity in px/s
     if (IsKeyPressed(KEY_UP) && p->onGround) {
         p->velocity.y = JUMP_FORCE;
         p->onGround = false;
     }
 
-    p->velocity.y += GRAVITY; // Apply gravity
-    p->position.y += p->velocity.y; // Update vertical position
+    // Gravity (px/s^2) integrated with dt
+    p->velocity.y += GRAVITY * dt;
 
-    // Terminal velocity
-    if (p->velocity.y > 10) p->velocity.y = 10;
+    // Clamp terminal velocity
+    if (p->velocity.y > TERMINAL_VEL) p->velocity.y = TERMINAL_VEL;
 
-    // Simple ground collision
+    // Integrate vertical position
+    p->position.y += p->velocity.y * dt;
+
+    // Ground collision
     if (p->position.y >= SCREEN_HEIGHT - 32) {
-        p->position.y = SCREEN_HEIGHT - 32; // Ground level
-        p->velocity.y = 0;
+        p->position.y = SCREEN_HEIGHT - 32;
+        p->velocity.y = 0.0f;
         p->onGround = true;
     }
 }

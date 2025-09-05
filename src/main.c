@@ -22,9 +22,14 @@ int main(void) {
     Game game; // Game instance
     Game_Initialize(&game); // Initialize game
 
+    SetTargetFPS(120);               // Set our game to run at 120 frames-per-second
+
     while (!WindowShouldClose()) {
+        // delta time
+        float dt = GetFrameTime();
+
         // Update
-        Game_Update(&game);
+        Game_Update(&game, dt);
 
         BeginDrawing();
         ClearBackground(RAYWHITE);

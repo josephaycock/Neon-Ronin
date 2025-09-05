@@ -17,7 +17,7 @@ typedef struct {
 void Player_Initialize(Player* p, Vector2 startPos, Vector2 startVel);
 
 // Update player state
-void Player_Update(Player* p);
+void Player_Update(Player* p, float dt);
 
 // Clamp player position to screen bounds
 void Player_ClampToScreen(Player* p);

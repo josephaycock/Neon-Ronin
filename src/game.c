@@ -2,15 +2,19 @@
 #include <raymath.h>
 #include "constants.h"
 #include "game.h"
+#include "level.h"
 
 // Initialize the game
 void Game_Initialize(Game* g) {
     g->state = GAME_STATE_MENU; // Start in menu state
+
+    Level_LoadRoom(0);
+
     Player_Initialize(&g->player, (Vector2){ SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }, (Vector2){ 1, 1 }); // Initialize player in center of screen
 }
 
 // Update the game state
-void Game_Update(Game* g) {
+void Game_Update(Game* g, float dt) {
     switch (g->state) {
         case GAME_STATE_MENU:
             // Handle menu logic
@@ -20,7 +24,7 @@ void Game_Update(Game* g) {
             break;
         case GAME_STATE_PLAYING:
             // Handle gameplay logic
-            Player_Update(&g->player); // Update player
+            Player_Update(&g->player, dt); // Update player
             Player_ClampToScreen(&g->player); // Keep player on screen
             break;
         case GAME_OVER:
@@ -47,6 +51,10 @@ void Game_Draw(const Game* g) {
                 DrawLine(x, 0, x, SCREEN_HEIGHT, GREEN);
             for (int y = 0; y < SCREEN_HEIGHT; y += 32)
                 DrawLine(0, y, SCREEN_WIDTH, y, GREEN);
+
+            // Level
+            Level_Draw();
+
             // Player
             Player_Draw(&g->player);
             break;
